@@ -1,0 +1,131 @@
+﻿@@using Microsoft.AspNetCore.Components.Web
+@inject ILocalStorageService localStorage
+
+
+<header class="navindex bg-black fixed w-full shadow-2xl top-0 left-0 border-b border-sky-500 dark:bg-black">
+    @* <div class="bg-zinc-900 md:block hidden">
+    <div class="max-w-screen-xl mx-auto flex items-center justify-between sm:pr-3.5 px-2 lg:pl-5">
+    <div class="flex-1">
+    <p class="text-sm text-zinc-300 leading-6">
+
+    Send us your feature requests
+
+    </p>
+    </div>
+    <div class="px-4">
+    <!-- button -->
+    <NavLink href="MicrosoftIdentity/Account/SignIn" class="bg-sky-600 px-2 py-1 text-sm font-semibold text-white shadow-sm hover:bg-sky-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600">
+    Get Started
+    </NavLink>
+    </div>
+    </div>
+    </div> *@
+    <nav class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-3" aria-label="navigation">
+        <div class="flex lg:flex-1">
+            <a href="/" class="-m-1.5 p-1.5">
+                <span class="sr-only">HVAC TopGun</span>
+                <img class="h-8 w-auto" src="/images/topgun_logosmallwhite2.jpg" alt="">
+            </a>
+        </div>
+
+        <div class="hidden lg:flex lg:gap-x-12">
+
+            <a href="#features" class="text-sm font-semibold leading-6 text-white hover:text-sky-400">Solutions</a>
+            <a href="/hvacbusinessacademy" class="text-sm font-semibold leading-6 text-white hover:text-sky-400">Business Academy</a>
+            <a href="/Pricing" class="text-sm font-semibold leading-6 text-white hover:text-sky-400">Pricing</a>
+            <a href="/Company" class="text-sm font-semibold leading-6 text-white hover:text-sky-400">Company</a>
+        </div>
+
+        <div class="hidden lg:flex lg:flex-1 lg:justify-end">
+
+
+            <AccessControl />
+        </div>
+        <!-- Hamburger Button -->
+        <button @ref="btn" @onclick="NavToggle" id="btn"
+                class="z-30 md:hidden focus:outline-none hamburger @(isMenuOpen ? "open" : "")">
+            <span class="text-white hamburger-top"></span>
+            <span class="hamburger-middle"></span>
+            <span class="hamburger-bottom"></span>
+        </button>
+        <!-- Mobile Menu -->
+        <div @ref="menu" id="menu" class="fixed inset-0 z-20 @(isMenuOpen ? "flex" : "hidden")
+         flex-col items-center shadow-2xl self-end w-full h-full m-h-screen px-6 py-1 pt-24 pb-4 tracking-widest text-white uppercase
+         divide-y divide-gray-500 bg-black">
+            <div class="w-full py-3 text-center">
+
+                <img @ref="logo" src="/images/topgun_logosmallwhite2.jpg" class="h-9 mx-auto block" alt="Logo" id="logo" />
+
+            </div>
+            <div class="w-full py-3 text-center">
+                <NavLink @onclick="NavToggle" href="#features" class="block hover:text-sky-500">Solutions</NavLink>
+            </div>
+            <div class="w-full py-3 text-center">
+                <NavLink @onclick="NavToggle" href="/HVACBusinessAcademy" class="block hover:text-sky-500">Business Academy</NavLink>
+            </div>
+            <div class="w-full py-3 text-center">
+                <NavLink @onclick="NavToggle" class=" block hover:text-sky-500" href="/Pricing">Pricing</NavLink>
+            </div>
+            <div class="w-full py-3 text-center">
+                <NavLink @onclick="NavToggle" class=" block hover:text-sky-500" href="/Company">Company</NavLink>
+            </div>
+            <div class="w-full py-3 text-center">
+                <AccessControl />
+            </div>
+        </div>
+    </nav>
+
+
+</header>
+<style>
+    .navindex {
+        z-index: 1000;
+    }
+</style>
+
+
+@code {
+    private ElementReference btn;
+    private ElementReference menu;
+    private ElementReference logo;
+    private bool isMenuOpen = false;
+    private bool _darkMode = true;
+    private string menuClass => isMenuOpen ? "flex" : "hidden";
+    private string Theme { get; set; } = "light";
+
+    private bool isDarkMode = false;
+
+    private async Task ToggleDarkMode(bool darkMode)
+    {
+        isDarkMode = darkMode;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private void NavToggle()
+    {
+        isMenuOpen = !isMenuOpen;
+    }
+
+    private string GetLogoSource()
+    {
+        string logoFileName = _darkMode ? "logo-dark.png" : "logo-light.png";
+        string logoSource = $"images/{logoFileName}";
+        return logoSource;
+    }
+
+
+    private void LoginClicked()
+    {
+        // Handle login button click event
+    }
+
+    private async Task UpdateDarkMode(bool darkMode)
+    {
+        _darkMode = darkMode;
+        await InvokeAsync(StateHasChanged);
+    }
+
+
+
+
+}

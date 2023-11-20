@@ -1,0 +1,88 @@
+﻿@page "/HVACBusinessAcademy"
+@page "/c/{categorySlug}/posts"
+
+@inject BlogPostService BlogPostService
+@inject CategoryService CategoryService
+
+<PageTitle>@heading | HVAC Business Academy</PageTitle>
+@if (isLoading)
+{
+    <div class="mt-40">Loading...</div>
+}
+<div class="mt-7 relative isolate overflow-hidden bg-gray-900 px-6 py-20 sm:py-30 lg:px-8">
+    <img src="/images/blogheaderBG.jpg" alt="" class="absolute inset-0 -z-10 h-full w-full object-cover">
+    <div class="hidden sm:absolute sm:-top-10 sm:right-1/2 sm:-z-10 sm:mr-10 sm:block sm:transform-gpu sm:blur-3xl" aria-hidden="true">
+
+    </div>
+
+    
+    <div class="mx-auto max-w-2xl text-center">
+        <h1 class="text-4xl mb-3 text-white sm:text-5xl font-extrabold">@heading</h1>
+     
+        <p class="mt-6 text-base leading-8 text-gray-300">
+            A place where you can find the stratigies and tactics to help you grow and run your HVAC business.
+        </p>
+    </div>
+</div>
+
+
+<div class="mt-10 mx-auto  max-w-screen-xl px-5 py-30 sm:py-25 lg:px-7 lg:py-29">
+    <div class="flex flex-wrap -mx-4">
+        <div class="w-full sm:w-3/4 px-4">
+            
+            @if (!posts.Any())
+            {
+                <div class="flex justify-center items-center min-h-[250px] flex-col">
+                    <h3>No blog posts found</h3>
+                   
+                            <p>Please check back later</p>
+                       
+                </div>
+            }
+            else
+            {
+                <BlogPostsList Posts="posts" />
+            }
+        </div>
+        <div class="w-full sm:w-1/4 px-4">
+            <CategoriesBox CategorySlug="@CategorySlug" OnCategoryNameFound="SetHeading" />
+        </div>
+    </div>
+</div>
+
+<Footer/>
+@code{
+    [Parameter]
+    public string? CategorySlug { get; set; }
+    private bool isLoading = true;
+
+    private string heading = "HVAC Business Academy";
+
+    private IEnumerable<BlogPost> posts = Enumerable.Empty<BlogPost>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await SetDataAsync();
+    }
+
+    private async Task SetDataAsync()
+    {
+        isLoading = true;
+        var postsTask = BlogPostService.GetPostsAsync(publishedOnly: true, CategorySlug);
+        posts = (await postsTask).OrderByDescending(p => p.PublishedOn).ToList();
+        isLoading = false;
+        StateHasChanged();  // notify the framework to re-render the component
+    }
+
+    private void SetHeading(string? categoryName = null)
+    {
+        if (!string.IsNullOrWhiteSpace(CategorySlug) && !string.IsNullOrWhiteSpace(categoryName))
+        {
+            heading = $"Latest {categoryName} Posts";
+        }
+        else
+        {
+            heading = "Latest Posts";
+        }
+    }
+}

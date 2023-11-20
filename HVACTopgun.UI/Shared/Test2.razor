@@ -1,0 +1,738 @@
+﻿@inherits LayoutComponentBase
+@inject ILocalStorageService localStorage
+@using HVACTopGun.Services.Features.Auth;
+@using HVACTopGun.Services.Features.Tenants;
+@using HVACTopGun.Services.Features.Users;
+@using Microsoft.AspNetCore.Components.Web
+@using Microsoft.JSInterop
+@inject IJSRuntime JSRuntime
+@inject ITenantService TenantService
+@inject IUserService UserService
+@inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IAuthService AuthService
+
+<div class="antialiased bg-gray-50 dark:bg-black">
+    <nav class="navbar border-b border-sky-200 px-4 py-2.5 bg-black border-sky-700 fixed left-0 right-0 top-0 z-50 shadow-xl">
+      <div class="flex flex-wrap justify-between items-center">
+        <div class="flex justify-start items-center">
+
+                
+                <NavLink href="https://www.hvactopgun.com">
+                    <div class="flex-shrink-0 @(isMenuOpen ? "" : "")">
+                        <img class="block h-8 " src="/images/topgun_logosmallwhite2.jpg" alt="HVAC TopGun Logo">
+                    </div>
+                </NavLink>
+                
+         
+        </div>
+        <div class="flex items-center lg:order-2">
+          
+              
+          <!-- Notifications -->
+          
+          <!-- Dropdown menu -->
+         
+          <!-- Apps -->
+          
+          <!-- Dropdown menu -->
+                <!-- Profile dropdown -->
+                <div class="relative ml-3 flex-shrink-0 mr-6">
+                    <div>
+                        <button type="button" class="flex rounded-full bg-sky-600 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-sky-600"
+                        @onclick="ToggleDropdown" aria-expanded="@isDropdownOpen">
+                            <span class="sr-only">Open user menu</span>
+                            <img class="h-8 w-8 rounded-full"
+                                 src="/images/user_dark_blue.png"
+                                 alt="profile picture">
+                        </button>
+                    </div>
+
+                    <!-- Dropdown menu -->
+                    <div class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black z-50 ring-opacity-5 @(isDropdownOpen ? "block" : "none")"
+                    @onclick="CloseDropdown" style="display: @(isDropdownOpen ? "block" : "none")">
+                        <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1">
+                            <!-- Dropdown items -->
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem" tabindex="-1"
+                            @onclick="HandleMenuItemClick">Your Profile</a>
+
+                            <a href="MicrosoftIdentity/Account/SignOut" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem" tabindex="-1"
+                            @onclick="HandleMenuItemClick">Sign out</a>
+                        </div>
+                    </div>
+                </div>
+                <button @ref="btn" @onclick="NavToggle" id="btn"
+                        class="z-30 md:hidden focus:outline-none hamburger @(isMenuOpen ? "open" : "")">
+                    <span class="text-white hamburger-top"></span>
+                    <span class="hamburger-middle"></span>
+                    <span class="hamburger-bottom"></span>
+                </button>
+        </div>
+      </div>
+        <div @ref="menu1" class="dropdown-menu pb-3 pt-4 lg:hidden @(isMenuOpen ? "flex" : "hidden") column-1" id="menu1">
+           
+
+            <nav class="flex flex-1 flex-col mx-1">
+                <div class="ml-3 mr-5">
+                    <div class="text-lg font-medium text-white mb-3">
+                        Welcome @FirstName!<br />
+                        @CompanyName
+                    </div>
+
+                </div>
+                <ul role="list" class="flex flex-1 flex-col gap-y-7">
+                    <li>
+                        <ul role="list" class="mx-2 space-y-1">
+                            <li class="border-opacity-0 hover:border-b hover:border-sky-600 hover:bg-zinc-900">
+                                <NavLink @onclick="NavToggle" class="flex items-center p-2 text-base font-medium text-gray-200 transition duration-75 dark:hover:bg-gray-900"
+                                         href="/dashboard">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />
+                                    </svg>
+
+                                    <span class="ml-3">Dashboard</span>
+                                </NavLink>
+                            </li>
+
+
+
+                            <li class="border-opacity-0 hover:border-b hover:border-sky-600 hover:bg-zinc-900">
+                                <NavLink @onclick="NavToggle" class="flex items-center p-2 text-base font-medium text-gray-200 transition duration-75 dark:hover:bg-gray-900"
+                                         href="/Appointments">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 14.15v4.25c0 1.094-.787 2.036-1.872 2.18-2.087.277-4.216.42-6.378.42s-4.291-.143-6.378-.42c-1.085-.144-1.872-1.086-1.872-2.18v-4.25m16.5 0a2.18 2.18 0 00.75-1.661V8.706c0-1.081-.768-2.015-1.837-2.175a48.114 48.114 0 00-3.413-.387m4.5 8.006c-.194.165-.42.295-.673.38A23.978 23.978 0 0112 15.75c-2.648 0-5.195-.429-7.577-1.22a2.016 2.016 0 01-.673-.38m0 0A2.18 2.18 0 013 12.489V8.706c0-1.081.768-2.015 1.837-2.175a48.111 48.111 0 013.413-.387m7.5 0V5.25A2.25 2.25 0 0013.5 3h-3a2.25 2.25 0 00-2.25 2.25v.894m7.5 0a48.667 48.667 0 00-7.5 0M12 12.75h.008v.008H12v-.008z" />
+                                    </svg>
+
+                                    <span class="ml-3">Appointments</span>
+                                </NavLink>
+                            </li>
+                            <li class="border-opacity-0 hover:border-b hover:border-sky-600 hover:bg-zinc-900">
+                                <NavLink @onclick="NavToggle" class="flex items-center p-2 text-base font-medium text-gray-200 transition duration-75 dark:hover:bg-gray-900"
+                                         href="/Appointments">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-robot" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                        <path d="M7 7h10a2 2 0 0 1 2 2v1l1 1v3l-1 1v3a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-3l-1 -1v-3l1 -1v-1a2 2 0 0 1 2 -2z"></path>
+                                        <path d="M10 16h4"></path>
+                                        <circle cx="8.5" cy="11.5" r=".5" fill="currentColor"></circle>
+                                        <circle cx="15.5" cy="11.5" r=".5" fill="currentColor"></circle>
+                                        <path d="M9 7l-1 -4"></path>
+                                        <path d="M15 7l1 -4"></path>
+                                    </svg>
+
+                                    <span class="ml-3">AI Assistant</span>
+                                </NavLink>
+                            </li>
+
+
+
+                            <li class="border-opacity-0 hover:border-b hover:border-sky-600 hover:bg-zinc-900">
+                                <NavLink @onclick="NavToggle" class="flex items-center p-2 text-base font-medium text-gray-200 transition duration-75 dark:hover:bg-gray-900"
+                                         href="/scheduler">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12V15zm0 2.25h.008v.008H12v-.008zM9.75 15h.008v.008H9.75V15zm0 2.25h.008v.008H9.75v-.008zM7.5 15h.008v.008H7.5V15zm0 2.25h.008v.008H7.5v-.008zm6.75-4.5h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008zm2.25-4.5h.008v.008H16.5v-.008zm0 2.25h.008v.008H16.5V15z" />
+                                    </svg>
+
+                                    <span class="ml-3">Schedule</span>
+                                </NavLink>
+                            </li>
+                            <li class="border-opacity-0 hover:border-b hover:border-sky-600 hover:bg-zinc-900">
+                                <NavLink @onclick="NavToggle" class="flex items-center p-2 text-base font-medium text-gray-200 transition duration-75 dark:hover:bg-gray-900"
+                                         href="/Customers">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z" />
+                                    </svg>
+
+                                    <span class="ml-3">Customers</span>
+                                </NavLink>
+                            </li>
+                            <li class="border-opacity-0 hover:border-b hover:border-sky-600 hover:bg-zinc-900">
+                                <NavLink @onclick="NavToggle" class="flex items-center p-2 text-base font-medium text-gray-200 transition duration-75 dark:hover:bg-gray-900"
+                                         href="/Pricebook">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+                                    </svg>
+
+                                    <span class="ml-3">Pricebook</span>
+                                </NavLink>
+                            </li>
+                            <li class="border-opacity-0 hover:border-b hover:border-sky-600 hover:bg-zinc-900">
+                                <NavLink @onclick="NavToggle" class="flex items-center p-2 text-base font-medium text-gray-200 transition duration-75 dark:hover:bg-gray-900"
+                                         href="/Messages">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 9.75a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375m-13.5 3.01c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.184-4.183a1.14 1.14 0 01.778-.332 48.294 48.294 0 005.83-.498c1.585-.233 2.708-1.626 2.708-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z" />
+                                    </svg>
+
+                                    <span class="ml-3">Messages</span>
+                                </NavLink>
+                            </li>
+                            <li class="border-opacity-0 hover:border-b hover:border-sky-600 hover:bg-zinc-900">
+                                <NavLink @onclick="NavToggle" class="flex items-center p-2 text-base font-medium text-gray-200 transition duration-75 dark:hover:bg-gray-900"
+                                         href="/FollowUp">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 3v1.5M3 21v-6m0 0l2.77-.693a9 9 0 016.208.682l.108.054a9 9 0 006.086.71l3.114-.732a48.524 48.524 0 01-.005-10.499l-3.11.732a9 9 0 01-6.085-.711l-.108-.054a9 9 0 00-6.208-.682L3 4.5M3 15V4.5" />
+                                    </svg>
+
+                                    <span class="ml-3">Follow up</span>
+                                </NavLink>
+                            </li>
+                            <li class="border-opacity-0 hover:border-b hover:border-sky-600 hover:bg-zinc-900">
+                                <NavLink @onclick="NavToggle" class="flex items-center p-2 text-base font-medium text-gray-200 transition duration-75 dark:hover:bg-gray-900"
+                                         href="/Reports">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25M9 16.5v.75m3-3v3M15 12v5.25m-4.5-15H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                                    </svg>
+
+                                    <span class="ml-3">Reports</span>
+                                </NavLink>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <div class="text-xs font-semibold leading-6 text-gray-400"><hr /></div>
+                        <ul role="list" class="mx-2 mt-2 space-y-1">
+                            <li class="border-opacity-0 hover:border-b hover:border-sky-600 hover:bg-zinc-900">
+                                <NavLink @onclick="NavToggle" class="flex items-center p-2 text-base font-medium text-gray-200 transition duration-75 dark:hover:bg-gray-900 "
+                                         href="/Help">
+
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.712 4.33a9.027 9.027 0 011.652 1.306c.51.51.944 1.064 1.306 1.652M16.712 4.33l-3.448 4.138m3.448-4.138a9.014 9.014 0 00-9.424 0M19.67 7.288l-4.138 3.448m4.138-3.448a9.014 9.014 0 010 9.424m-4.138-5.976a3.736 3.736 0 00-.88-1.388 3.737 3.737 0 00-1.388-.88m2.268 2.268a3.765 3.765 0 010 2.528m-2.268-4.796a3.765 3.765 0 00-2.528 0m4.796 4.796c-.181.506-.475.982-.88 1.388a3.736 3.736 0 01-1.388.88m2.268-2.268l4.138 3.448m0 0a9.027 9.027 0 01-1.306 1.652c-.51.51-1.064.944-1.652 1.306m0 0l-3.448-4.138m3.448 4.138a9.014 9.014 0 01-9.424 0m5.976-4.138a3.765 3.765 0 01-2.528 0m0 0a3.736 3.736 0 01-1.388-.88 3.737 3.737 0 01-.88-1.388m2.268 2.268L7.288 19.67m0 0a9.024 9.024 0 01-1.652-1.306 9.027 9.027 0 01-1.306-1.652m0 0l4.138-3.448M4.33 16.712a9.014 9.014 0 010-9.424m4.138 5.976a3.765 3.765 0 010-2.528m0 0c.181-.506.475-.982.88-1.388a3.736 3.736 0 011.388-.88m-2.268 2.268L4.33 7.288m6.406 1.18L7.288 4.33m0 0a9.024 9.024 0 00-1.652 1.306A9.025 9.025 0 004.33 7.288" />
+                                    </svg>
+
+                                    <span class="ml-3">Help</span>
+
+                                </NavLink>
+                            </li>
+                            <li class="border-opacity-0 hover:border-b hover:border-sky-600 hover:bg-zinc-900">
+                                <NavLink @onclick="NavToggle" class="flex items-center p-2 text-base font-medium text-gray-200 transition duration-75 dark:hover:bg-gray-900 "
+                                         href="/manual">
+
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m3.75 9v6m3-3H9m1.5-12H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                                    </svg>
+
+
+                                    <span class="ml-3">Manual</span>
+
+                                </NavLink>
+                            </li>
+                            <li class="border-opacity-0 hover:border-b hover:border-sky-600 hover:bg-zinc-900">
+                                <NavLink @onclick="NavToggle" class="flex items-center p-2 text-base font-medium text-gray-200 transition duration-75 dark:hover:bg-gray-900 "
+                                         href="/Settings">
+
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.149.894c.07.424.384.764.78.93.398.164.855.142 1.205-.108l.737-.527a1.125 1.125 0 011.45.12l.773.774c.39.389.44 1.002.12 1.45l-.527.737c-.25.35-.272.806-.107 1.204.165.397.505.71.93.78l.893.15c.543.09.94.56.94 1.109v1.094c0 .55-.397 1.02-.94 1.11l-.893.149c-.425.07-.765.383-.93.78-.165.398-.143.854.107 1.204l.527.738c.32.447.269 1.06-.12 1.45l-.774.773a1.125 1.125 0 01-1.449.12l-.738-.527c-.35-.25-.806-.272-1.203-.107-.397.165-.71.505-.781.929l-.149.894c-.09.542-.56.94-1.11.94h-1.094c-.55 0-1.019-.398-1.11-.94l-.148-.894c-.071-.424-.384-.764-.781-.93-.398-.164-.854-.142-1.204.108l-.738.527c-.447.32-1.06.269-1.45-.12l-.773-.774a1.125 1.125 0 01-.12-1.45l.527-.737c.25-.35.273-.806.108-1.204-.165-.397-.505-.71-.93-.78l-.894-.15c-.542-.09-.94-.56-.94-1.109v-1.094c0-.55.398-1.02.94-1.11l.894-.149c.424-.07.765-.383.93-.78.165-.398.143-.854-.107-1.204l-.527-.738a1.125 1.125 0 01.12-1.45l.773-.773a1.125 1.125 0 011.45-.12l.737.527c.35.25.807.272 1.204.107.397-.165.71-.505.78-.929l.15-.894z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    </svg>
+
+
+                                    <span class="ml-3">Settings</span>
+
+                                </NavLink>
+                            </li>
+                        </ul>
+                    </li>
+                    
+
+                </ul>
+            </nav>
+
+        </div>
+    </nav>
+
+    <!-- Sidebar -->
+    
+    <aside
+      class="fixed top-0 left-0 z-40 w-64 h-screen pt-14 transition-transform -translate-x-full bg-white border-r border-gray-200 md:translate-x-0 dark:bg-black dark:border-gray-700"
+      aria-label="Sidenav"
+      id="drawer-navigation"
+    >
+      <div class="overflow-y-auto py-5 px-3 h-full bg-white dark:bg-black">
+        <form action="#" method="GET" class="md:hidden mb-2">
+          <label for="sidebar-search" class="sr-only">Search</label>
+          <div class="relative">
+            <div
+              class="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none"
+            >
+              <svg
+                class="w-5 h-5 text-gray-500 dark:text-gray-400"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                ></path>
+              </svg>
+            </div>
+            <input
+              type="text"
+              name="search"
+              id="sidebar-search"
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+              placeholder="Search"
+            />
+          </div>
+        </form>
+        <ul class="space-y-2">
+          
+                <li class=" hover:border hover:border-sky-600">
+                    <NavLink class="flex items-center p-2 text-base font-medium text-gray-900 transition duration-75 hover:bg-blue-100 dark:hover:bg-gray-700 dark:text-white group" 
+                             href="/dashboard">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />
+                        </svg>
+
+                        <span class="ml-3">Dashboard</span>
+                    </NavLink>
+                </li>
+          
+                   
+                <li class=" hover:border hover:border-sky-600">
+                    <NavLink class="flex items-center p-2 text-base font-medium text-gray-900 transition duration-75 hover:bg-blue-100 dark:hover:bg-gray-700 dark:text-white group"
+                             href="/Bookings">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 14.15v4.25c0 1.094-.787 2.036-1.872 2.18-2.087.277-4.216.42-6.378.42s-4.291-.143-6.378-.42c-1.085-.144-1.872-1.086-1.872-2.18v-4.25m16.5 0a2.18 2.18 0 00.75-1.661V8.706c0-1.081-.768-2.015-1.837-2.175a48.114 48.114 0 00-3.413-.387m4.5 8.006c-.194.165-.42.295-.673.38A23.978 23.978 0 0112 15.75c-2.648 0-5.195-.429-7.577-1.22a2.016 2.016 0 01-.673-.38m0 0A2.18 2.18 0 013 12.489V8.706c0-1.081.768-2.015 1.837-2.175a48.111 48.111 0 013.413-.387m7.5 0V5.25A2.25 2.25 0 0013.5 3h-3a2.25 2.25 0 00-2.25 2.25v.894m7.5 0a48.667 48.667 0 00-7.5 0M12 12.75h.008v.008H12v-.008z" />
+                        </svg>
+
+                        <span class="ml-3">Jobs</span>
+                    </NavLink>
+                </li>
+
+
+                <li class=" hover:border hover:border-sky-600">
+                    <NavLink class="flex items-center p-2 text-base font-medium text-gray-900 transition duration-75 hover:bg-blue-100 dark:hover:bg-gray-700 dark:text-white group"
+                             href="/Scheduler">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12V15zm0 2.25h.008v.008H12v-.008zM9.75 15h.008v.008H9.75V15zm0 2.25h.008v.008H9.75v-.008zM7.5 15h.008v.008H7.5V15zm0 2.25h.008v.008H7.5v-.008zm6.75-4.5h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008zm2.25-4.5h.008v.008H16.5v-.008zm0 2.25h.008v.008H16.5V15z" />
+                        </svg>
+
+                        <span class="ml-3">Schedule</span>
+                    </NavLink>
+                </li>
+                <li class=" hover:border hover:border-sky-600">
+                    <NavLink class="flex items-center p-2 text-base font-medium text-gray-900 transition duration-75 hover:bg-blue-100 dark:hover:bg-gray-700 dark:text-white group"
+                             href="/Inventory">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z" />
+                        </svg>
+
+                        <span class="ml-3">Customers</span>
+                    </NavLink>
+                </li>
+                <li class=" hover:border hover:border-sky-600">
+                    <NavLink class="flex items-center p-2 text-base font-medium text-gray-900 transition duration-75 hover:bg-blue-100 dark:hover:bg-gray-700 dark:text-white group"
+                             href="/Inventory">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-robot" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                            <path d="M7 7h10a2 2 0 0 1 2 2v1l1 1v3l-1 1v3a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-3l-1 -1v-3l1 -1v-1a2 2 0 0 1 2 -2z"></path>
+                            <path d="M10 16h4"></path>
+                            <circle cx="8.5" cy="11.5" r=".5" fill="currentColor"></circle>
+                            <circle cx="15.5" cy="11.5" r=".5" fill="currentColor"></circle>
+                            <path d="M9 7l-1 -4"></path>
+                            <path d="M15 7l1 -4"></path>
+                        </svg>
+
+                        <span class="ml-3">AI Assistant</span>
+                    </NavLink>
+                </li>
+                <li class=" hover:border hover:border-sky-600">
+                    <NavLink class="flex items-center p-2 text-base font-medium text-gray-900 transition duration-75 hover:bg-blue-100 dark:hover:bg-gray-700 dark:text-white group"
+                             href="/Pricebook">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+                        </svg>
+
+                        <span class="ml-3">Pricebook</span>
+                    </NavLink>
+                </li>
+                <li class=" hover:border hover:border-sky-600">
+                    <NavLink class="flex items-center p-2 text-base font-medium text-gray-900 transition duration-75 hover:bg-blue-100 dark:hover:bg-gray-700 dark:text-white group"
+                             href="/Messages">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 9.75a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375m-13.5 3.01c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.184-4.183a1.14 1.14 0 01.778-.332 48.294 48.294 0 005.83-.498c1.585-.233 2.708-1.626 2.708-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z" />
+                        </svg>
+
+                        <span class="ml-3">Messages</span>
+                    </NavLink>
+                </li>
+                <li class=" hover:border hover:border-sky-600">
+                    <NavLink class="flex items-center p-2 text-base font-medium text-gray-900 transition duration-75 hover:bg-blue-100 dark:hover:bg-gray-700 dark:text-white group"
+                             href="/FollowUp">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 3v1.5M3 21v-6m0 0l2.77-.693a9 9 0 016.208.682l.108.054a9 9 0 006.086.71l3.114-.732a48.524 48.524 0 01-.005-10.499l-3.11.732a9 9 0 01-6.085-.711l-.108-.054a9 9 0 00-6.208-.682L3 4.5M3 15V4.5" />
+                        </svg>
+
+                        <span class="ml-3">Follow up</span>
+                    </NavLink>
+                </li>
+                <li class=" hover:border hover:border-sky-600">
+                    <NavLink class="flex items-center p-2 text-base font-medium text-gray-900 transition duration-75 hover:bg-blue-100 dark:hover:bg-gray-700 dark:text-white group"
+                             href="/Reports">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25M9 16.5v.75m3-3v3M15 12v5.25m-4.5-15H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                        </svg>
+
+                        <span class="ml-3">Reports</span>
+                    </NavLink>
+                </li>
+        </ul>
+        <ul
+          class="pt-5 mt-5 space-y-2 border-t border-gray-200 dark:border-gray-700"
+        >
+          <li class=" hover:border hover:border-sky-600">
+            <NavLink class="flex items-center p-2 text-base font-medium text-gray-900 transition duration-75 hover:bg-blue-100 dark:hover:bg-gray-700 dark:text-white group"
+                             href="/Manual">
+
+                     
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                        </svg>
+
+                        <span class="ml-3">Manual</span>
+                        
+            </NavLink>
+          </li>
+
+
+
+                <li class=" hover:border hover:border-sky-600">
+                    <NavLink class="flex items-center p-2 text-base font-medium text-gray-900 transition duration-75 hover:bg-blue-100 dark:hover:bg-gray-700 dark:text-white group" 
+                    href="/Help">
+
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M16.712 4.33a9.027 9.027 0 011.652 1.306c.51.51.944 1.064 1.306 1.652M16.712 4.33l-3.448 4.138m3.448-4.138a9.014 9.014 0 00-9.424 0M19.67 7.288l-4.138 3.448m4.138-3.448a9.014 9.014 0 010 9.424m-4.138-5.976a3.736 3.736 0 00-.88-1.388 3.737 3.737 0 00-1.388-.88m2.268 2.268a3.765 3.765 0 010 2.528m-2.268-4.796a3.765 3.765 0 00-2.528 0m4.796 4.796c-.181.506-.475.982-.88 1.388a3.736 3.736 0 01-1.388.88m2.268-2.268l4.138 3.448m0 0a9.027 9.027 0 01-1.306 1.652c-.51.51-1.064.944-1.652 1.306m0 0l-3.448-4.138m3.448 4.138a9.014 9.014 0 01-9.424 0m5.976-4.138a3.765 3.765 0 01-2.528 0m0 0a3.736 3.736 0 01-1.388-.88 3.737 3.737 0 01-.88-1.388m2.268 2.268L7.288 19.67m0 0a9.024 9.024 0 01-1.652-1.306 9.027 9.027 0 01-1.306-1.652m0 0l4.138-3.448M4.33 16.712a9.014 9.014 0 010-9.424m4.138 5.976a3.765 3.765 0 010-2.528m0 0c.181-.506.475-.982.88-1.388a3.736 3.736 0 011.388-.88m-2.268 2.268L4.33 7.288m6.406 1.18L7.288 4.33m0 0a9.024 9.024 0 00-1.652 1.306A9.025 9.025 0 004.33 7.288" />
+                        </svg>
+
+                        <span class="ml-3">Help</span>
+
+                    </NavLink>
+                </li>
+                <li class="mt-auto hover:border-b hover:border-sky-600">
+                    <NavLink class="flex items-center p-2 text-base font-medium text-gray-900 transition duration-75 hover:bg-blue-100 dark:hover:bg-gray-700 dark:text-white group"
+                             href="/Settings">
+
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.149.894c.07.424.384.764.78.93.398.164.855.142 1.205-.108l.737-.527a1.125 1.125 0 011.45.12l.773.774c.39.389.44 1.002.12 1.45l-.527.737c-.25.35-.272.806-.107 1.204.165.397.505.71.93.78l.893.15c.543.09.94.56.94 1.109v1.094c0 .55-.397 1.02-.94 1.11l-.893.149c-.425.07-.765.383-.93.78-.165.398-.143.854.107 1.204l.527.738c.32.447.269 1.06-.12 1.45l-.774.773a1.125 1.125 0 01-1.449.12l-.738-.527c-.35-.25-.806-.272-1.203-.107-.397.165-.71.505-.781.929l-.149.894c-.09.542-.56.94-1.11.94h-1.094c-.55 0-1.019-.398-1.11-.94l-.148-.894c-.071-.424-.384-.764-.781-.93-.398-.164-.854-.142-1.204.108l-.738.527c-.447.32-1.06.269-1.45-.12l-.773-.774a1.125 1.125 0 01-.12-1.45l.527-.737c.25-.35.273-.806.108-1.204-.165-.397-.505-.71-.93-.78l-.894-.15c-.542-.09-.94-.56-.94-1.109v-1.094c0-.55.398-1.02.94-1.11l.894-.149c.424-.07.765-.383.93-.78.165-.398.143-.854-.107-1.204l-.527-.738a1.125 1.125 0 01.12-1.45l.773-.773a1.125 1.125 0 011.45-.12l.737.527c.35.25.807.272 1.204.107.397-.165.71-.505.78-.929l.15-.894z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+
+
+                        <span class="ml-1">Settings</span>
+                    </NavLink>
+
+                    <DarkModeToggle DarkModeChanged="HandleDarkModeChanged" />
+                </li>
+        </ul>
+      </div>
+      <div
+        class="hidden absolute bottom-0 left-0 justify-center p-4 space-x-4 w-full lg:flex bg-white dark:bg-black z-20"
+      >
+        <a
+          href="#"
+          class="inline-flex justify-center p-2 text-gray-500 rounded cursor-pointer dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-600"
+        >
+         <!-- SVG HERE -->
+        </a>
+        <a
+          href="#"
+          data-tooltip-target="tooltip-settings"
+          class="inline-flex justify-center p-2 text-gray-500 rounded cursor-pointer dark:text-gray-400 dark:hover:text-white hover:text-gray-900 hover:bg-gray-100 dark:hover:bg-gray-600"
+        >
+                <!-- SVG HERE -->
+        </a>
+        <div
+          id="tooltip-settings"
+          role="tooltip"
+          class="inline-block absolute invisible z-10 py-2 px-3 text-sm font-medium text-white bg-black rounded-lg shadow-sm opacity-0 transition-opacity duration-300 tooltip"
+        >
+          Settings page
+          <div class="tooltip-arrow" data-popper-arrow></div>
+        </div>
+        <button
+          type="button"
+          data-dropdown-toggle="language-dropdown"
+          class="inline-flex justify-center p-2 text-gray-500 rounded cursor-pointer dark:hover:text-white dark:text-gray-400 hover:text-gray-900 hover:bg-gray-100 dark:hover:bg-gray-600"
+        >
+          
+        </button>
+        <!-- Dropdown -->
+        <div
+          class="hidden z-50 my-4 text-base list-none bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700"
+          id="language-dropdown"
+        >
+          <ul class="py-1" role="none">
+            <li>
+
+                        <!-- SVG HERE -->
+            </li>
+            <li>
+              <a
+                href="#"
+                class="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-600"
+                role="menuitem"
+              >
+                
+              </a>
+            </li>
+            <li>
+              <a
+                href="#"
+                class="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-600"
+                role="menuitem"
+              >
+                <div class="inline-flex items-center">
+                  <svg
+                    aria-hidden="true"
+                    class="h-3.5 w-3.5 rounded-full mr-2"
+                    xmlns="http://www.w3.org/2000/svg"
+                    id="flag-icon-css-it"
+                    viewBox="0 0 512 512"
+                  >
+                    <g fill-rule="evenodd" stroke-width="1pt">
+                      <path fill="#fff" d="M0 0h512v512H0z" />
+                      <path fill="#009246" d="M0 0h170.7v512H0z" />
+                      <path fill="#ce2b37" d="M341.3 0H512v512H341.3z" />
+                    </g>
+                  </svg>
+                  Italiano
+                </div>
+              </a>
+            </li>
+            <li>
+              <a
+                href="#"
+                class="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:text-white dark:text-gray-300 dark:hover:bg-gray-600"
+                role="menuitem"
+              >
+                <div class="inline-flex items-center">
+                  <svg
+                    aria-hidden="true"
+                    class="h-3.5 w-3.5 rounded-full mr-2"
+                    xmlns="http://www.w3.org/2000/svg"
+                    xmlns:xlink="http://www.w3.org/1999/xlink"
+                    id="flag-icon-css-cn"
+                    viewBox="0 0 512 512"
+                  >
+                    <defs>
+                      <path
+                        id="a"
+                        fill="#ffde00"
+                        d="M1-.3L-.7.8 0-1 .6.8-1-.3z"
+                      />
+                    </defs>
+                    <path fill="#de2910" d="M0 0h512v512H0z" />
+                    <use
+                      width="30"
+                      height="20"
+                      transform="matrix(76.8 0 0 76.8 128 128)"
+                      xlink:href="#a"
+                    />
+                    <use
+                      width="30"
+                      height="20"
+                      transform="rotate(-121 142.6 -47) scale(25.5827)"
+                      xlink:href="#a"
+                    />
+                    <use
+                      width="30"
+                      height="20"
+                      transform="rotate(-98.1 198 -82) scale(25.6)"
+                      xlink:href="#a"
+                    />
+                    <use
+                      width="30"
+                      height="20"
+                      transform="rotate(-74 272.4 -114) scale(25.6137)"
+                      xlink:href="#a"
+                    />
+                    <use
+                      width="30"
+                      height="20"
+                      transform="matrix(16 -19.968 19.968 16 256 230.4)"
+                      xlink:href="#a"
+                    />
+                  </svg>
+                  
+                </div>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </aside>
+
+
+    <div class="lg:pl-72 min-h-screen">
+        <main class="py-12">
+            <div class="px-4 sm:px-6 lg:px-8 z-10 h-full">
+                <h1 class="pt-8 pb-2 text-3xl font-bold dark:text-white">
+                    @GetPageTitle()
+                </h1>
+                @Body
+            </div>
+        </main>
+    </div>
+  </div>
+
+<style>
+    .dropdown-menu {
+        z-index: 1001; /* or any value higher than the Syncfusion z-index */
+    }
+
+    .navbar {
+        z-index: 1001; /* or any value higher than the Syncfusion z-index */
+    }
+</style>
+
+@code {
+    private ClaimsPrincipal User { get; set; }
+    private string FirstName { get; set; }
+    private string CompanyName { get; set; }
+    private string menuClass2 => isMenuOpen ? "flex" : "hidden";
+    private string dropdownClass => isDropdownOpen ? "block" : "hidden";
+    private bool isDropdownOpen = false;
+    private bool isMobileMenuOpen = false;
+    private ElementReference btn;
+    private ElementReference menu;
+    private ElementReference menu1;
+    private ElementReference logo;
+    private bool isMenuOpen = false;
+    private bool _darkMode = true;
+    private string menuClass => isMenuOpen ? "flex" : "hidden";
+    private string Theme { get; set; } = "dark";
+    private int? tenantId;
+    private bool isDarkMode = true;
+
+   
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var objectId = authState.User.FindFirstValue("http://schemas.microsoft.com/identity/claims/objectidentifier");
+        tenantId = await TenantService.GetTenantIdByObjectId(objectId); // Assign the value to the class-level tenantId property
+        User = authState.User;
+
+        FirstName = User.FindFirstValue("extension_FirstName");
+        CompanyName = User.FindFirstValue("extension_CompanyName");
+    }
+    private async Task HandleDarkModeChanged(bool darkMode)
+    {
+        _darkMode = darkMode;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private string GetPageTitle()
+    {
+        var pageTitle = ""; // Set a default title
+        var currentUri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
+        var pageName = currentUri.Segments.LastOrDefault()?.Trim('/') ?? string.Empty;
+
+        // You can define custom logic here to set the page title based on the page name or other criteria
+        switch (pageName)
+        {
+            case "dashboard":
+                pageTitle = "Dashboard";
+                break;
+            case "scheduler":
+                pageTitle = "Schedule";
+                break;
+            case "Scheduler":
+                pageTitle = "Schedule";
+                break;
+            case "Bookings":
+                pageTitle = "Job Bookings";
+                break;
+            case "Inventory":
+                pageTitle = "Inventory";
+                break;
+            case "Messages":
+                pageTitle = "Messages";
+                break;
+            case "FollowUp":
+                pageTitle = "FollowUp";
+                break;
+            case "Pricebook":
+                pageTitle = "Pricebook";
+                break;
+            case "Docs":
+                pageTitle = "Documentation";
+                break;
+
+            case "Help":
+                pageTitle = "Help";
+                break;
+            case "Reports":
+                pageTitle = "Reports";
+                break;
+            case "Settings":
+                pageTitle = "Settings";
+                break;
+            case "Manual":
+                pageTitle = "Manual";
+                break;
+                // Add more cases as needed for other pages
+        }
+
+        return pageTitle;
+    }
+
+    private async Task ToggleDarkMode(bool darkMode)
+    {
+        isDarkMode = darkMode;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private void NavToggle()
+    {
+        isMenuOpen = !isMenuOpen;
+
+    }
+
+    private string GetLogoSource()
+    {
+        string logoFileName = _darkMode ? "logo-light.png" : "logo-dark.png";
+        string logoSource = $"images/{logoFileName}";
+        return logoSource;
+    }
+
+    private void toggleMobileMenu()
+    {
+        isMobileMenuOpen = !isMobileMenuOpen;
+    }
+
+
+    private void LoginClicked()
+    {
+        // Handle login button click event
+    }
+
+    private async Task UpdateDarkMode(bool darkMode)
+    {
+        _darkMode = darkMode;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private void ToggleDropdown()
+    {
+        isDropdownOpen = !isDropdownOpen;
+    }
+
+    private void CloseDropdown()
+    {
+        isDropdownOpen = false;
+    }
+
+    private void HandleMenuItemClick()
+    {
+        // Handle the menu item click event here
+    }
+
+    private void HandleMobileMenuItemClick()
+    {
+        // Handle the mobile menu item click event here
+    }
+
+
+
+}

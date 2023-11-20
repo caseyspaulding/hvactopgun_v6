@@ -1,0 +1,26 @@
+﻿@using HVACTopGun.UI.Shared
+<CascadingAuthenticationState>
+    <Router AppAssembly="@typeof(App).Assembly">
+        <Found Context="routeData">
+            <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+                <Authorizing>
+                    <p>Determining session state, please wait...</p>
+                </Authorizing>
+                <NotAuthorized>
+                    <h1>Sorry</h1>
+                    <img class="h-75" src="/images/lord-of-the-rings-you-shall-not-pass.gif" alt="Gandalf Saying You Shall Not Pass Meme" />
+                    <p>You're not authorized to reach this page. You need to log in.</p>
+                </NotAuthorized>
+            </AuthorizeRouteView>
+            <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+        </Found>
+        <NotFound>
+            <PageTitle>Not found</PageTitle>
+            <LayoutView Layout="@typeof(MainLayout)">
+                
+                  <Error/>
+           
+            </LayoutView>
+        </NotFound>
+    </Router>
+</CascadingAuthenticationState>

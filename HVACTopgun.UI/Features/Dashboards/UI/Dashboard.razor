@@ -1,0 +1,191 @@
+﻿@page "/dashboard"
+@layout Test2
+@inject IJSRuntime JSRuntime
+@inject ITenantService TenantDataService
+@inject IUserService UserDataService
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IAuthService AuthService
+@using HVACTopGun.Services.Features.Auth;
+@using HVACTopGun.Services.Features.Tenants;
+@using HVACTopGun.Services.Features.Users;
+@using HVACTopGun.UI.Features.Scheduler.UI
+@using Syncfusion.Blazor.CircularGauge
+@using Syncfusion.Blazor.Layouts
+@using Syncfusion.Blazor.Inputs
+@using Syncfusion.Blazor
+@attribute [Authorize]
+
+
+<div class="dark:text-white">
+    <p>Welcome, @FirstName!</p>
+    <p>Company: @CompanyName</p>
+
+</div>
+
+ 
+<div class="z-40">
+    <SfDashboardLayout ID="DashBoard" @ref="DashboardLayout" AllowResizing="true" AllowFloating="true" Columns="4">
+        <DashboardLayoutPanels>
+            <DashboardLayoutEvents Created="Created" OnResizeStop="@ResizingHandler" OnWindowResize="@ResizingWindow" Resizing="ResizingHandler"></DashboardLayoutEvents>
+            <DashboardLayoutPanel Column="0" Row="0">
+                <HeaderTemplate>
+                    <div class="flex items-center text-base font-medium text-gray-900 transition duration-75 border-opacity-0 hover:border-b hover:border-sky-600">
+                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class=" w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12V15zm0 2.25h.008v.008H12v-.008zM9.75 15h.008v.008H9.75V15zm0 2.25h.008v.008H9.75v-.008zM7.5 15h.008v.008H7.5V15zm0 2.25h.008v.008H7.5v-.008zm6.75-4.5h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008zm2.25-4.5h.008v.008H16.5v-.008zm0 2.25h.008v.008H16.5V15z" />
+                        
+                    </svg>
+                        <span class="ml-2">Upcoming Jobs</span>
+                  </div>
+                        
+                </HeaderTemplate>
+                <ContentTemplate>
+                    
+                    </ContentTemplate>
+            </DashboardLayoutPanel>
+
+            <DashboardLayoutPanel Column="0" Row="1" SizeX="3">
+                <HeaderTemplate>Panel 2</HeaderTemplate>
+                <ContentTemplate>
+                    <BarChart/>
+                </ContentTemplate>
+            </DashboardLayoutPanel>
+
+            <DashboardLayoutPanel Column="1" Row="0">
+                <HeaderTemplate>
+                    <div class="flex items-center text-base font-medium text-gray-900 transition duration-75 border-opacity-0 hover:border-b hover:border-sky-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class=" w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12V15zm0 2.25h.008v.008H12v-.008zM9.75 15h.008v.008H9.75V15zm0 2.25h.008v.008H9.75v-.008zM7.5 15h.008v.008H7.5V15zm0 2.25h.008v.008H7.5v-.008zm6.75-4.5h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008zm2.25-4.5h.008v.008H16.5v-.008zm0 2.25h.008v.008H16.5V15z" />
+
+                        </svg>
+                        <span class="ml-2">Open Estimates</span>
+                    </div>
+                </HeaderTemplate>
+                <ContentTemplate>
+                   <DonutChart/>
+
+                </ContentTemplate>
+            </DashboardLayoutPanel>
+
+            <DashboardLayoutPanel Column="3" Row="0">
+                <HeaderTemplate>
+                    <div class="flex items-center text-base font-medium text-gray-900 transition duration-75 border-opacity-0 hover:border-b hover:border-sky-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class=" w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12V15zm0 2.25h.008v.008H12v-.008zM9.75 15h.008v.008H9.75V15zm0 2.25h.008v.008H9.75v-.008zM7.5 15h.008v.008H7.5V15zm0 2.25h.008v.008H7.5v-.008zm6.75-4.5h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008zm2.25-4.5h.008v.008H16.5v-.008zm0 2.25h.008v.008H16.5V15z" />
+
+                        </svg>
+                        <span class="ml-2">Todays Stats</span>
+                    </div>
+                </HeaderTemplate>
+                <ContentTemplate> </ContentTemplate>
+            </DashboardLayoutPanel>
+
+             <DashboardLayoutPanel Column="4" Row="0">
+                <HeaderTemplate>
+                    <div class="flex items-center text-base font-medium text-gray-900 transition duration-75 border-opacity-0 hover:border-b hover:border-sky-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class=" w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12V15zm0 2.25h.008v.008H12v-.008zM9.75 15h.008v.008H9.75V15zm0 2.25h.008v.008H9.75v-.008zM7.5 15h.008v.008H7.5V15zm0 2.25h.008v.008H7.5v-.008zm6.75-4.5h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008zm2.25-4.5h.008v.008H16.5v-.008zm0 2.25h.008v.008H16.5V15z" />
+
+                        </svg>
+                        <span class="ml-2">Open Invoices</span>
+                    </div>
+                </HeaderTemplate>
+                <ContentTemplate>
+                  
+                </ContentTemplate>
+            </DashboardLayoutPanel>
+
+            <DashboardLayoutPanel Column="3" Row="3">
+                <HeaderTemplate>
+                    <div class="flex items-center text-base font-medium text-gray-900 transition duration-75 border-opacity-0 hover:border-b hover:border-sky-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class=" w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12V15zm0 2.25h.008v.008H12v-.008zM9.75 15h.008v.008H9.75V15zm0 2.25h.008v.008H9.75v-.008zM7.5 15h.008v.008H7.5V15zm0 2.25h.008v.008H7.5v-.008zm6.75-4.5h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008zm2.25-4.5h.008v.008H16.5v-.008zm0 2.25h.008v.008H16.5V15z" />
+
+                        </svg>
+                        <span class="ml-2">Todays Stats</span>
+                    </div>
+                </HeaderTemplate>
+                <ContentTemplate>Content of Panel </ContentTemplate>
+            </DashboardLayoutPanel>
+            
+
+        </DashboardLayoutPanels>
+    </SfDashboardLayout>
+
+   
+</div>
+<style>
+    .dashboard-container {
+        position: relative;
+    }
+
+    .annotationText {
+        font-size: 35px;
+        width: 120px;
+        text-align: center;
+        margin-top: -30px;
+        margin-left: -55px
+    }
+
+
+    .e-panel-content {
+        text-align: center;
+        margin-top: -3px;
+    }
+</style>
+
+@code
+{
+    SfCircularGauge GaugeOne;
+    SfCircularGauge GaugeTwo;
+    SfCircularGauge GaugeThree;
+    SfDashboardLayout DashboardLayout;
+    public bool IsInitialRender { get; set; }
+    public double[] CellSpacing = { 10, 10 };
+
+    private ClaimsPrincipal User { get; set; }
+    private string FirstName { get; set; }
+    private string CompanyName { get; set; }
+    private int? tenantId;
+
+    public  void Created(Object args)
+    {
+        IsInitialRender = true;
+    }
+
+    public async Task ResizingWindow(Syncfusion.Blazor.Layouts.ResizeArgs args)
+    {
+        await DashboardLayout.RefreshAsync();
+        
+        
+       
+    }
+    public async Task ResizingHandler(Syncfusion.Blazor.Layouts.ResizeArgs args)
+    {
+        if (args.Id == "LayoutOne")
+        {
+            await Task.Delay(100);
+           
+        }
+        else if (args.Id == "LayoutTwo")
+        {
+            await Task.Delay(100);
+           
+        }
+        else if (args.Id == "LayoutThree")
+        {
+            await Task.Delay(100);
+           
+        }
+    }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var objectId = authState.User.FindFirstValue("http://schemas.microsoft.com/identity/claims/objectidentifier");
+        tenantId = await TenantDataService.GetTenantIdByObjectId(objectId); // Assign the value to the class-level tenantId property
+        User = authState.User;
+        FirstName = User.FindFirstValue("extension_FirstName");
+        CompanyName = User.FindFirstValue("extension_CompanyName");
+    }
+}

@@ -1,0 +1,103 @@
+﻿@using Microsoft.AspNetCore.Components.Web
+@inject ILocalStorageService localStorage
+
+
+<header class="bg-black/80 fixed w-full z-20 top-0 left-0 border-b border-sky-500 dark:bg-black/80">
+    <nav class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-3" aria-label="navigation">
+        <div class="flex lg:flex-1">
+            <a href="#" class="-m-1.5 p-1.5">
+                <span class="sr-only">HVAC TopGun</span>
+                <img class="h-9 w-auto" src="/images/topgun_logosmallwhite2.jpg" alt="">
+            </a>
+        </div>
+        
+        <div class="hidden lg:flex lg:gap-x-12">
+            <a href="#pricing" class="text-sm font-semibold leading-6 text-white hover:text-sky-400">Pricing</a>
+            <a href="#features" class="text-sm font-semibold leading-6 text-white hover:text-sky-400">Features</a>
+            <a href="https://suggestionapphvactopgun.azurewebsites.net/" class="text-sm font-semibold leading-6 text-white hover:text-sky-400">Suggestions</a>
+            <a href="#" class="text-sm font-semibold leading-6 text-white hover:text-sky-400">Company</a>
+        </div>
+        <div class="hidden lg:flex lg:flex-1 lg:justify-end">
+            <AccessControl />
+            <span class="text-white" aria-hidden="true">&rarr;</span>
+        </div>
+        <!-- Hamburger Button -->
+        <button @ref="btn" @onclick="NavToggle" id="btn"
+                class="z-30 md:hidden focus:outline-none hamburger @(isMenuOpen ? "open" : "")">
+            <span class="text-white hamburger-top"></span>
+            <span class="hamburger-middle"></span>
+            <span class="hamburger-bottom"></span>
+        </button>
+        <!-- Mobile Menu -->
+        <div @ref="menu" id="menu" class="fixed inset-0 z-20 @(isMenuOpen ? "flex" : "hidden")
+         flex-col items-center self-end w-full h-full m-h-screen px-6 py-1 pt-24 pb-4 tracking-widest text-white uppercase 
+         divide-y divide-gray-500 bg-black/90">
+            <div class="w-full py-3 text-center">
+
+                <img @ref="logo" src="/images/logo-dark.png" class="mx-auto block" alt="Logo" id="logo" />
+
+            </div>
+            <div class="w-full py-3 text-center">
+                <a href="#features" class="block hover:text-sky-500">Features</a>
+            </div>
+            <div class="w-full py-3 text-center">
+                <a href="https://suggestionapphvactopgun.azurewebsites.net/" class="block hover:text-sky-500">Suggestion</a>
+            </div>
+            <div class="w-full py-3 text-center">
+                <a href="#faq" class="block hover:text-sky-500">FAQ</a>
+            </div>
+            <div class="w-full py-3 text-center block hover:text-sky-500 hover:shadow-xl">
+                <LoginDisplay />
+            </div>
+        </div>
+    </nav>
+  
+
+</header>
+
+
+@code {
+    private ElementReference btn;
+    private ElementReference menu;
+    private ElementReference logo;
+    private bool isMenuOpen = false;
+    private bool _darkMode = true;
+    private string menuClass => isMenuOpen ? "flex" : "hidden";
+    private string Theme { get; set; } = "light";
+
+    private bool isDarkMode = false;
+
+    private async Task ToggleDarkMode(bool darkMode)
+    {
+        isDarkMode = darkMode;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private void NavToggle()
+    {
+        isMenuOpen = !isMenuOpen;
+    }
+
+    private string GetLogoSource()
+    {
+        string logoFileName = _darkMode ? "logo-dark.png" : "logo-light.png";
+        string logoSource = $"images/{logoFileName}";
+        return logoSource;
+    }
+
+
+    private void LoginClicked()
+    {
+        // Handle login button click event
+    }
+
+    private async Task UpdateDarkMode(bool darkMode)
+    {
+        _darkMode = darkMode;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    
+
+    
+}

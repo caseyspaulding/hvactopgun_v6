@@ -1,0 +1,169 @@
+﻿@page "/"
+@using Microsoft.AspNetCore.Components.Web
+@namespace HVACTopGun.UI
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <base href="~/" /> 
+    <link href="css/styles.css" rel="stylesheet" defer />
+    <link href="HVACTopgun.UI.styles.css" rel="stylesheet" defer />
+     <link href="css/tailwind_syncfusion.min.css" rel="stylesheet" defer />
+  
+    <link rel="icon" type="image/png" href="favicon.ico"/>
+    <component type="typeof(HeadOutlet)" render-mode="ServerPrerendered" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" defer>
+    <link href="_content/Syncfusion.Blazor.Themes/bootstrap5.css" rel="stylesheet" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" defer>
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" defer>
+    <link rel="manifest" href="/site.webmanifest" >
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="description" content="Manage your HVAC business with ease. Simplify and Manage Your HVAC Business Effortlessly: Online Scheduling, Estimates, Dispatching, and Payments Made Easy. Boost efficiency, maximize growth,
+                    and stay ahead of the competition with our powerful HVAC software.">
+    <link href="/Sass/Saas.min.css" rel="stylesheet" defer>
+
+</head>
+
+<body class="h-full w-full">
+    <component type="typeof(App)" render-mode="ServerPrerendered" />
+
+    <div id="blazor-error-ui">
+        <environment include="Staging,Production">
+            An error has occurred. This application may no longer respond until reloaded.
+        </environment>
+        <environment include="Development">
+            An unhandled exception has occurred. See browser dev tools for details.
+        </environment>
+     @*    <a href="" class="reload">Reload</a>
+        <a class="dismiss">🗙</a> *@
+    </div>
+
+    <script src="_framework/blazor.server.js"></script>
+    <script src="/js/Disqus.js"></script>
+    <script src="~/js/theme.js"></script>
+    <script src="_content/Syncfusion.Blazor.Core/scripts/syncfusion-blazor.min.js" type="text/javascript"></script>
+    <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
+    <script>
+
+        // Set  the CSS rules.
+        const styleSet = window.WebChat.createStyleSet({
+            bubbleBackground: 'rgba(0, 0, 255, .1)',
+            bubbleFromUserBackground: 'rgba(0, 255, 0, .1)',
+            rootHeight: '100%',
+            rootWidth: '50%',
+            backgroundColor: 'paleturquoise'
+        });
+
+        // After generated, you can modify the CSS rules.
+        // Change font family and weight.
+        styleSet.textContent = {
+            ...styleSet.textContent,
+            fontFamily: "'Comic Sans MS', 'Arial', sans-serif",
+            fontWeight: 'bold'
+        };
+
+        // Set the avatar options.
+        const avatarOptions = {
+            botAvatarInitials: 'BF',
+            userAvatarInitials: 'WC'
+        };
+
+        window.WebChat.renderWebChat({
+            directLine: window.WebChat.createDirectLine({
+                token: '<Your Direct Line token>'
+            }),
+            styleSet,
+            styleOptions: avatarOptions
+        }, document.getElementById('webchat'));
+
+    </script>
+    <script>
+        function navToggle() {
+            btn.classList.toggle('open');
+            menu.classList.toggle('flex');
+            menu.classList.toggle('hidden');
+
+            if (menu.classList.contains('flex')) {
+                logo.setAttribute('src', 'images/logo-bookmark-footer.svg');
+            } else {
+                logo.setAttribute('src', 'images/logo-bookmark.svg');
+            }
+        }
+    </script>
+    
+    <script>
+        window.openModal = (id) => {
+            var dialog = document.getElementById(id);
+            dialog.showModal();
+        };
+
+        window.closeModal = (id) => {
+            var dialog = document.getElementById(id);
+            dialog.close();
+        };
+    </script>
+    
+    <script>
+        function BlazorScrollToId(id) {
+            const element = document.getElementById(id);
+            if (element instanceof HTMLElement) {
+                element.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start",
+                    inline: "nearest"
+                });
+            }
+        }
+    </script>
+    <script>
+        Blazor.defaultReconnectionHandler._reconnectCallback = function (d) {
+            document.location.reload();
+        }
+    </script>
+    <script src="_content/Microsoft.AspNetCore.SignalR.Client/browser/signalr.min.js"></script>
+    <!-- Include your custom JavaScript for chat functionality -->
+    <script>
+        var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
+
+        // Start the connection
+        connection.start().then(function () {
+            console.log("connected");
+        });
+
+        // Define how to handle messages from the server
+        connection.on("ReceiveMessage", function (user, message) {
+            // Handle the message here
+            console.log(user + " says " + message);
+        });
+
+        // Function to send messages to the server
+        function sendMessage(user, message) {
+            connection.invoke("SendMessage", user, message).catch(function (err) {
+                return console.error(err.toString());
+            });
+        }
+    </script>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-GX2ZWGHEP6"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-GX2ZWGHEP6');
+    </script>
+    <!-- Clarity tracking code for https://hvactopgun.com/ -->
+    <script>
+        (function (c, l, a, r, i, t, y) {
+            c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
+            t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i + "?ref=bwt";
+            y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+        })(window, document, "clarity", "script", "i8zhdgkr9r");
+    </script>
+   
+</body>
+</html>

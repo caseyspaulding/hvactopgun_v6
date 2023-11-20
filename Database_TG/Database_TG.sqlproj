@@ -1,0 +1,118 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <Name>Database_TG</Name>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectVersion>4.1</ProjectVersion>
+    <ProjectGuid>{07de761d-beb7-4095-8098-0d2824a7f9a5}</ProjectGuid>
+    <DSP>Microsoft.Data.Tools.Schema.Sql.SqlAzureV12DatabaseSchemaProvider</DSP>
+    <OutputType>Database</OutputType>
+    <RootPath>
+    </RootPath>
+    <RootNamespace>Database_TG</RootNamespace>
+    <AssemblyName>Database_TG</AssemblyName>
+    <ModelCollation>1033, CI</ModelCollation>
+    <DefaultFileStructure>BySchemaAndSchemaType</DefaultFileStructure>
+    <DeployToDatabase>True</DeployToDatabase>
+    <TargetFrameworkVersion>v4.8.1</TargetFrameworkVersion>
+    <TargetLanguage>CS</TargetLanguage>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <SqlServerVerification>False</SqlServerVerification>
+    <IncludeCompositeObjects>True</IncludeCompositeObjects>
+    <TargetDatabaseSet>True</TargetDatabaseSet>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>bin\Release\</OutputPath>
+    <BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <OutputPath>bin\Debug\</OutputPath>
+    <BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">11.0</VisualStudioVersion>
+    <!-- Default to the v11.0 targets path if the targets file for the current VS version is not found -->
+    <SSDTExists Condition="Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets')">True</SSDTExists>
+    <VisualStudioVersion Condition="'$(SSDTExists)' == ''">11.0</VisualStudioVersion>
+  </PropertyGroup>
+  <Import Condition="'$(SQLDBExtensionsRefPath)' != ''" Project="$(SQLDBExtensionsRefPath)\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
+  <Import Condition="'$(SQLDBExtensionsRefPath)' == ''" Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
+  <ItemGroup>
+    <Folder Include="Properties" />
+    <Folder Include="dbo" />
+    <Folder Include="dbo\Stored Procedures" />
+    <Folder Include="dbo\Tables" />
+  </ItemGroup>
+  <ItemGroup>
+    <Build Include="dbo\Tables\Tenants.sql" />
+    <Build Include="dbo\Tables\Users.sql" />
+    <Build Include="dbo\Tables\Customers.sql" />
+    <Build Include="dbo\Tables\Services.sql" />
+    <Build Include="dbo\Tables\Appointments.sql" />
+    <Build Include="dbo\Tables\Technicians.sql" />
+    <Build Include="dbo\Tables\Availability.sql" />
+    <Build Include="dbo\Tables\Invoices.sql" />
+    <Build Include="dbo\Tables\JobTypes.sql" />
+    <Build Include="dbo\Tables\PriceBook.sql" />
+    <Build Include="dbo\Tables\Inventory.sql" />
+    <Build Include="dbo\Tables\Roles.sql" />
+    <Build Include="dbo\Tables\Estimates.sql" />
+    <Build Include="dbo\Tables\HVACCompanies.sql" />
+    <Build Include="dbo\Tables\ChatBotConversations.sql" />
+    <Build Include="dbo\Tables\CustomerBilling.sql" />
+    <Build Include="dbo\Tables\CustomerHistory.sql" />
+    <Build Include="dbo\Tables\Payments.sql" />
+    <Build Include="dbo\Tables\AvailableAppointment.sql" />
+    <Build Include="dbo\Stored Procedures\spUserExists.sql" />
+    <Build Include="dbo\Stored Procedures\spGetAllTenants.sql" />
+    <Build Include="dbo\Stored Procedures\spGetTenant.sql" />
+    <Build Include="dbo\Stored Procedures\spAddTenant.sql" />
+    <Build Include="dbo\Stored Procedures\spUpdateTenant.sql" />
+    <Build Include="dbo\Stored Procedures\spDeleteTenant.sql" />
+    <Build Include="dbo\Stored Procedures\spSoftDeleteTenant.sql" />
+    <Build Include="dbo\Stored Procedures\spUpdateUser.sql" />
+    <Build Include="dbo\Stored Procedures\spAddUser.sql" />
+    <Build Include="dbo\Stored Procedures\spGetUserById.sql" />
+    <Build Include="dbo\Stored Procedures\spGetUserByObjectId.sql" />
+    <Build Include="dbo\Stored Procedures\spGetTenantByBusinessName.sql" />
+    <Build Include="dbo\Stored Procedures\sp_Add_UserRole.sql" />
+    <Build Include="dbo\Tables\TenantSubscriptions.sql" />
+    <Build Include="dbo\Tables\Subscriptions.sql" />
+    <Build Include="dbo\Stored Procedures\spGetTenantIdByObjectId.sql" />
+    <Build Include="dbo\Stored Procedures\spGetRoleByName.sql" />
+    <Build Include="dbo\Tables\UserRole.sql" />
+    <Build Include="dbo\Stored Procedures\spGetAllAppointmentModels.sql" />
+    <Build Include="dbo\Stored Procedures\spAddAppointmentModel.sql" />
+    <Build Include="dbo\Stored Procedures\spUpdateAppointmentModel.sql" />
+    <Build Include="dbo\Stored Procedures\spSoftDeleteAppointmentModel.sql" />
+    <Build Include="dbo\Stored Procedures\spGetAppointmentById.sql" />
+    <Build Include="dbo\Stored Procedures\spGetAllChatMessages.sql" />
+    <Build Include="dbo\Stored Procedures\spInsertChatMessage.sql" />
+    <Build Include="dbo\Stored Procedures\spUpdateChatMessage.sql" />
+    <Build Include="dbo\Stored Procedures\spDeleteChatMessage.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Database_TG.publish.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <RefactorLog Include="Database_TG.refactorlog" />
+  </ItemGroup>
+</Project>
